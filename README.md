@@ -39,7 +39,7 @@ From regular user just run `sudo su -` to ensure that.
 
 ## Interfaces, ip_forward and firewall
 
-Check your network interfaces with `ifconfig`. I'm old school and I preffer that to newer `ip a`, install `net-tools` package if you don't have it.
+Check your network interfaces with `ifconfig`. I'm old school and I preffer that to the newer `ip a` so install the `net-tools` package if you don't already have it.
 
 Presumably the wireless interface is already configured and you have access to the internet, we'll don't touch that. The wired interface is called in my case `enp3s0` and is unconfigured. 
 
