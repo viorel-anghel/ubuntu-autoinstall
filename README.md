@@ -16,7 +16,7 @@ The main idea is to isolate the client's network and have the Linux router provi
 
 The easiest way is to use a Linux laptop with both wireless and wired interfaces — this will act as the router. In my setup, the clients are older (Gen 5 / Gen 7) Intel NUC mini-computers.
 
-
+```
       ^internet connection
      /
     /wlan
@@ -25,6 +25,7 @@ The easiest way is to use a Linux laptop with both wireless and wired interfaces
   | laptop +---------+ unmanaged +--- NUC1
   |        |         | switch    +--- NUC2
   +--------+         +-----------+
+```
 
 If you don't have a switch, you can connect a single client directly to the laptop’s wired interface.
 
