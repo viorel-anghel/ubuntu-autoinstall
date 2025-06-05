@@ -35,18 +35,23 @@ Work in terminal, on the Linux router. Clone this repo. In all instructions I'm 
 you are running all commands as *ROOT* under `/root` directory. 
 From regular user just run `sudo su -` to ensure that.
 
+Check your network interfaces with `ifconfig`. I'm old school and I prefer that to the newer `ip a`, 
+so install the `net-tools` package if you don't already have it.
+
+Presumably the wireless interface is already configured and you have access to the internet, we'll don't touch that. 
+The wired interface is called in my case **enp3s0** and is unconfigured. 
+I'm choosing a static IP address for that: **192.168.10.1**. Pick your own 
+to avoid conflicts with your local network(s) but remember to replace it everywhere 
+in config files where you see **192.168.10**.
+
 ## Interfaces, ip_forward and firewall
 
-Check your network interfaces with `ifconfig`. I'm old school and I prefer that to the newer `ip a`, so install the `net-tools` package if you don't already have it.
-
-Presumably the wireless interface is already configured and you have access to the internet, we'll don't touch that. The wired interface is called in my case **enp3s0** and is unconfigured. I'm choosing a static IP address for that: **192.168.10.1**. Pick your own to avoid conflicts with your local network(s) but remember to replace it everywhere in config files where you see **192.168.10*.
-
-Now you need to
+You need to
 - setup the static IP 192.168.10.1 on wired interface
 - enable ip_forward - that's will transform your Linux in a router, enabling packets routing between interfaces
 - (optional) set IP masquerading to make packets from clients go out on the wireless interface with the same IP as the wifi one
 
-One way to do that would be:
+One way to do it is:
 
 ```
 # set the IP on wired interface  
@@ -64,7 +69,7 @@ iptables -t nat -I POSTROUTING \! -o enp3s0 -s 192.168.10.0/24 -j MASQUERADE
 
 You will need to somehow make those settings persistent. I'm leaving in this repo some example firewall files which can help.
 
-## Simple http server
+## Nginx as simple http server
 
 Install nginx (`apt install nginx`) and copy the files from this repo var_www_html into `/var/www/html/`. 
 Some of them will need to be ajusted and I'll discuss them below.
@@ -83,7 +88,7 @@ INTERFACESv4="enp0s3"
 INTERFACESv6=""
 ```
 
-Adjust the dhcpd.conf file form this repo for your case. Then restart and check the dhcpd:
+Adjust the [dhcpd.conf](dhcpd.conf) file form this repo for your case. Then restart and check the dhcpd:
 
 ```
 systemctl enable  isc-dhcp-server
@@ -92,6 +97,8 @@ systemctl status  isc-dhcp-server
 ```
 
 ## TFTP server
+
+TFTP means Trivial File Transfer Protocol — a simplified protocol for file transfers, used in LANs for network boot.
 
 Install packages: `apt install tftpd-hpa pxelinux syslinux-common`. 
 
@@ -108,7 +115,7 @@ cp /usr/lib/syslinux/modules/bios/menu.c32 /srv/tftp/
 mkdir /srv/tftp/pxelinux.cfg
 ```
 
-The main configuration file for boot from network is `/srv/tftp/pxelinux.cfg/default`, copy it from this repo `pxelinux-default`.
+The main configuration file for boot from network is `/srv/tftp/pxelinux.cfg/default`, copy it from this repo [srv_tftp/pxelinux.cfg/default](srv_tftp/pxelinux.cfg/default) .
 
 Restart and status the tftp server.
 
