@@ -1,0 +1,18 @@
+# file /etc/systemd/system/firewall.service
+# Run 'systemctl daemon-reload' to reload units.
+
+[Unit]
+Description=Firewall Service
+After=network.target
+
+[Service]
+ExecStart=/usr/local/bin/firewall.sh start
+#ExecStop=/usr/local/bin/firewall.sh stop
+Type=simple
+Restart=always
+User=root
+
+[Install]
+WantedBy=multi-user.target
+
+

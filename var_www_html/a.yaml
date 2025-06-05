@@ -1,0 +1,47 @@
+
+# docs at https://canonical-subiquity.readthedocs-hosted.com/en/latest/reference/autoinstall-reference.html
+
+autoinstall:
+  version: 1
+  storage:
+    layout:
+      name: lvm
+      sizing-policy: all
+# optional LUKS password
+      password: "TBD-123456"
+      match: 
+        path: /dev/nvme0n1
+  identity:
+    hostname: ubuntu-desktop
+    username: user1
+    password: "TBD-encrypted-password"
+
+  timezone: Europe/Bucharest
+  proxy: http://192.168.10.1:3128
+
+  ssh:
+    install-server: yes
+    allow-pw: yes
+    authorized-keys:
+      - ssh-rsa TBD-a-ssh-key
+      - ssh-ed25519 TBD-another-ssh-key
+
+  codecs:
+    install: true
+  drivers:
+    install: true
+
+#  updates: all
+
+  packages:
+    - git
+    - curl
+    - ansible
+
+  late-commands:
+    - curtin in-target -- bash -c "echo 'user1 ALL=(ALL) NOPASSWD:ALL' >/etc/sudoers.d/user1"
+    - curtin in-target -- chmod 440 /etc/sudoers.d/user1
+#    - curtin in-target -- bash -c "export F=autoinstall-late.sh && wget --tries=3 --timeout=5 --waitretry=2 -O /root/$F http://192.168.10.1/$F && chmod 755 /root/$F && /root/$F "
+    - curtin in-target -- bash -c "wget --tries=3 --timeout=5 --waitretry=2 -O /root/first-boot.sh http://192.168.10.1/first-boot.sh && chmod 755 /root/first-boot.sh && echo '@reboot /root/first-boot.sh desktop' >/var/spool/cron/crontabs/root && chmod 600 /var/spool/cron/crontabs/root && chown root.crontab /var/spool/cron/crontabs/root "
+
+

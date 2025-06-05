@@ -1,0 +1,31 @@
+
+# docs at https://canonical-subiquity.readthedocs-hosted.com/en/latest/reference/autoinstall-reference.html
+
+autoinstall:
+  version: 1
+  storage:
+    layout:
+      name: lvm
+#        sizing-policy: all
+#        password: "123456"
+      swap:
+        size: 0
+
+  identity:
+    hostname: ubuntu
+    username: user1
+    password: "TBD-encrypted-password"
+  timezone: Europe/Bucharest
+  proxy: http://192.168.10.1:3142
+
+  ssh:
+    install-server: yes
+    allow-pw: yes
+    authorized-keys:
+      - ssh-rsa tbd-one-ssh-key
+      - ssh-ed25519 tbd-another-ssh-key
+
+  late-commands:
+    - curtin in-target -- bash -c "echo 'user1 ALL=(ALL) NOPASSWD:ALL' >/etc/sudoers.d/user1"
+    - curtin in-target -- chmod 440 /etc/sudoers.d/user1
+
